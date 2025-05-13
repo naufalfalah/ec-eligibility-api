@@ -4,10 +4,18 @@ namespace App\Http\Controllers;
 
 use App\Models\Lead;
 use Illuminate\Http\Request;
+use App\Services\LeadService;
 use Illuminate\Support\Facades\DB;
 
 class LeadController extends Controller
 {
+    protected $leadService;
+
+    public function __construct(LeadService $leadService)
+    {
+        $this->leadService = $leadService;
+    }
+
     /**
      * Get all leads.
      *
@@ -112,6 +120,10 @@ class LeadController extends Controller
                 'phone_number' => $validated['phone_number'],
                 'email' => $validated['email'],
             ]);
+
+            if ($lead) {
+                $this->leadService->sendLeadToDiscord($lead->toArray());
+            }
 
             $response = [
                 'status' => 'success',
