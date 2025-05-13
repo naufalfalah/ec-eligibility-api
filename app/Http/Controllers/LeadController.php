@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Lead;
-use Illuminate\Http\Request;
+use App\Rules\NotFakeEmail;
+use App\Rules\NotFakeName;
+use App\Rules\NotFakePhone;
 use App\Services\LeadService;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class LeadController extends Controller
@@ -102,9 +105,9 @@ class LeadController extends Controller
             'ownership_status' => 'required|string',
             'private_property_ownership' => 'required|string',
             'first_time_applicant' => 'required|string',
-            'name' => 'required|string',
-            'phone_number' => 'required|string',
-            'email' => 'required|email',
+            'name' => ['required', 'string', new NotFakeName],
+            'phone_number' => ['required', 'string', new NotFakePhone],
+            'email' => ['required', 'email', new NotFakeEmail],
         ]);
 
         try {
